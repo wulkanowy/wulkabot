@@ -1,3 +1,8 @@
+"""
+Wulkabot
+Copyright (C) 2022-present Stanisław Jelnicki
+"""
+
 import discord
 from discord import app_commands
 from discord.ext import commands

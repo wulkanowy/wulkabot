@@ -1,4 +1,4 @@
-# wulkanowy-bot
+# Wulkabot
 
 Discord bot to help manage the Wulkanowy Discord server built with the
 [discord.py](https://github.com/Rapptz/discord.py) library
@@ -20,5 +20,5 @@ Discord bot to help manage the Wulkanowy Discord server built with the
 - Run the bot using
 
   ```
-  poetry run python -m bot
+  poetry run python -m wulkabot
   ```

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "wulkanowy-bot"
+name = "wulkabot"
 version = "0.1.0"
 description = "Discord bot to help manage the Wulkanowy Discord server"
 authors = ["JelNiSław <jelnislaw@gmail.com>"]
