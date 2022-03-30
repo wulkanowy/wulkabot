@@ -26,10 +26,10 @@ def github_repo_embed(repo: dict[str, Any]) -> discord.Embed:
     description = repo["description"]
     if homepage := repo["homepage"]:
         description += f"\n\n{homepage}"
-    stargazers_count = repo["stargazers_count"]
-    forks_count = repo["forks_count"]
-    watchers = repo["watchers"]
-    footer = f"⭐ {stargazers_count} 🍴 {forks_count} 👀 {watchers}"
+    stargazers = repo["stargazers_count"]
+    forks = repo["forks_count"]
+    watchers = repo["subscribers_count"]
+    footer = f"⭐ {stargazers} 🍴 {forks} 👀 {watchers}"
 
     return (
         discord.Embed(title=repo["full_name"], url=repo["html_url"], description=description)
