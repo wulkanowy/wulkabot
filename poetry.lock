@@ -104,7 +104,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "discord.py"
-version = "2.0.0a3987+gb7b99237"
+version = "2.0.0a3989+ge5153780"
 description = "A Python wrapper for the Discord API"
 category = "main"
 optional = false
@@ -124,7 +124,7 @@ voice = ["PyNaCl (>=1.3.0,<1.6)"]
 type = "git"
 url = "https://github.com/Rapptz/discord.py"
 reference = "HEAD"
-resolved_reference = "b7b992375d6e9338ae93c4383c6abfb9b8a0fa64"
+resolved_reference = "e515378076c64c5ab2f3a06237f2362ac8556290"
 
 [[package]]
 name = "flake8"
