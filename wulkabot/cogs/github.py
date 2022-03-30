@@ -31,7 +31,7 @@ class GitHub(commands.Cog):
         result = await self.bot.http_client.get(
             "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json"
         )
-        self.github_colours: dict[str, dict[str, str | None]] = await result.json(content_type=None)
+        self.github_colors: dict[str, dict[str, str | None]] = await result.json(content_type=None)
 
     async def cog_unload(self) -> None:
         await self.github.close()
@@ -50,7 +50,7 @@ class GitHub(commands.Cog):
                 title=repo["full_name"],
                 url=repo["html_url"],
                 description=description,
-                colour=self.get_github_color(repo["language"]),
+                color=self.get_github_color(repo["language"]),
             )
             .set_thumbnail(url=repo["owner"]["avatar_url"])
             .set_footer(text=footer)
@@ -59,10 +59,10 @@ class GitHub(commands.Cog):
     def get_github_color(self, language: str | None) -> int | None:
         if language is None:
             return None
-        colour = self.github_colours[language]["color"]
-        if colour is None:
+        color = self.github_colors[language]["color"]
+        if color is None:
             return 0xF5AAB9
-        return int(colour.removeprefix("#"), 16)
+        return int(color.removeprefix("#"), 16)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
