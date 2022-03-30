@@ -23,8 +23,8 @@ class Wulkabot(commands.Bot):
         )
 
     async def setup_hook(self) -> None:
-        await self.load_extensions(cogs)
         self.http_client = aiohttp.ClientSession()
+        await self.load_extensions(cogs)
 
     async def on_connect(self) -> None:
         print(f"Connected as {self.user}")
