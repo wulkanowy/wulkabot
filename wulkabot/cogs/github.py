@@ -6,7 +6,6 @@ Copyright (C) 2022-present Stanisław Jelnicki
 import re
 from typing import Any
 
-import aiohttp
 import discord
 from discord.ext import commands
 
@@ -25,7 +24,7 @@ class GitHub(commands.Cog):
     def __init__(self, bot: bot.Wulkabot) -> None:
         super().__init__()
         self.bot = bot
-        self.github = github.GitHub(aiohttp.ClientSession(base_url="https://api.github.com"))
+        self.github = github.GitHub()
 
     async def cog_load(self) -> None:
         result = await self.bot.http_client.get(
