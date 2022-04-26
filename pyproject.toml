@@ -8,11 +8,11 @@ packages = [{ include = "bot" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-discord = { git = "https://github.com/Rapptz/discord.py" }
+"discord.py" = { git = "https://github.com/Rapptz/discord.py" }
 aiohttp = "^3.8.1"
 python-dotenv = "^0.20.0"
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
 black = "^22.3.0"
 isort = "^5.10.1"
