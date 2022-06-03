@@ -8,11 +8,17 @@ class DeleteButton(discord.ui.View):
         self.message: discord.Message | None = None
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return (
+        if (
             interaction.user == self.invoker
             or isinstance(interaction.user, discord.Member)
             and interaction.user.resolved_permissions.manage_messages
+        ):
+            return True
+
+        await interaction.response.send_message(
+            "Tylko osoba która wywołała bota może usunąć tę wiadomość", ephemeral=True
         )
+        return False
 
     @discord.ui.button(label="Usuń", style=discord.ButtonStyle.danger)
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:

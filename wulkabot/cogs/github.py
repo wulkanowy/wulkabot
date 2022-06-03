@@ -155,7 +155,8 @@ class GitHub(commands.Cog):
         if message.author.bot:
             return
 
-        words = message.content.split()
+        # `dict.fromkeys` allows us to deduplicate the list whilst preserving order
+        words = dict.fromkeys(message.content.casefold().split()).keys()
         embeds = []
 
         try:
@@ -193,6 +194,7 @@ class GitHub(commands.Cog):
             view = DeleteButton(message.author)
             reply = await message.reply(embeds=embeds[:3], view=view)
             view.message = reply
+            print(reply.embeds)
 
 
 async def setup(bot: bot.Wulkabot):

@@ -29,7 +29,7 @@ class FAQ(commands.Cog):
         return [
             app_commands.Choice(name=question, value=question)
             for question in self.questions
-            if current.lower() in question.lower()
+            if current.casefold() in question.casefold()
         ]
 
     @app_commands.command()

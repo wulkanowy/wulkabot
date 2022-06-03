@@ -18,7 +18,7 @@ def is_ios_request(text: str, /) -> bool:
         # the text is longer and doesn't look like just a simple question
         return False
 
-    words = set(remove_diacritics(text.replace("?", "").replace("!", "")).lower().split())
+    words = set(remove_diacritics(text.replace("?", "").replace("!", "")).casefold().split())
 
     if "ios" not in words:
         return False
