@@ -117,7 +117,7 @@ class GitHub(commands.Cog):
         is_pull_request = "pull_request" in issue
         title = f'{"Pull request" if is_pull_request else "Issue"} #{issue["number"]}\n{issue["title"][:128]}'
         body = issue["body"]
-        if len(body) > 256:
+        if body is not None and len(body) > 256:
             body = None
 
         color = None
