@@ -31,7 +31,9 @@ class Development(commands.Cog):
         commands = await self.bot.tree.sync(guild=interaction.guild if current_guild else None)
         commands_str = ", ".join(c.name for c in commands)
         destination = "guild" if current_guild else "global"
-        await interaction.response.send_message(f"Synced **{len(commands)} {destination}** commands\n{commands_str}")
+        await interaction.response.send_message(
+            f"Synced **{len(commands)} {destination}** commands\n{commands_str}"
+        )
 
     @app_commands.command()
     async def reload(self, interaction: discord.Interaction):

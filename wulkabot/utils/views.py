@@ -7,7 +7,7 @@ class DeleteButton(discord.ui.View):
         self.invoker = invoker
         self.message: discord.Message | None = None
 
-    def interaction_check(self, interaction: discord.Interaction) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return (
             interaction.user == self.invoker
             or isinstance(interaction.user, discord.Member)

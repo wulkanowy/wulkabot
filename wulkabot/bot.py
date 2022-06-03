@@ -29,7 +29,9 @@ class Wulkabot(commands.Bot):
     async def on_connect(self) -> None:
         print(f"Connected as {self.user}")
 
-    async def on_command_error(self, context: commands.Context, exception: commands.errors.CommandError, /) -> None:
+    async def on_command_error(
+        self, context: commands.Context, exception: commands.errors.CommandError, /
+    ) -> None:
         await context.send(f"Error! {exception}")
 
     async def close(self) -> None:

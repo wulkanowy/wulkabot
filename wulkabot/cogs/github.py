@@ -6,6 +6,7 @@ Copyright (C) 2022-present Stanisław Jelnicki
 import re
 from typing import Any
 
+import aiohttp
 import discord
 from discord.ext import commands
 
@@ -13,12 +14,68 @@ from .. import bot
 from ..utils import github
 from ..utils.views import DeleteButton
 
-GITHUB_REPO = re.compile(r"(?:\s|^)(?P<owner>[\w-]+)/(?P<repo>[\w-]+)(?:\s|$)", re.ASCII)
+Repo = tuple[str, str]
+
+DEFAULT_REPO: Repo = ("wulkanowy", "wulkanowy")
 
 
-def match_repo(text: str) -> tuple[str, str] | None:
-    if match := GITHUB_REPO.search(text):
-        return (match["owner"], match["repo"])
+def parse_repo(text: str, *, default_owner: str | None = None) -> Repo | None:
+    """
+    Parses repository name and owner
+
+    "wulkanowy/sdk" => ("wulkanowy", "sdk")
+    "sdk" => None
+    "sdk", default_owner="wulkanowy" => ("wulkanowy", "sdk")
+    """
+    repo = text.split("/")
+
+    match len(repo):
+        case 1:
+            if default_owner is not None:
+                owner, repo = default_owner, repo[0]
+            else:
+                return None
+        case 2:
+            owner, repo = repo
+        case _:
+            return None
+
+    return (owner, repo)
+
+
+def parse_issue(
+    text: str, *, default_owner: str | None = None, default_repo: str | None = None
+) -> tuple[Repo, int] | None:
+    """
+    Parses an issue or a pull request string
+    """
+    if "#" not in text:
+        return None
+    repo, issue_number = text.rsplit("#", 1)
+    try:
+        issue_number = int(issue_number)
+    except ValueError:
+        return None
+    if issue_number <= 0:
+        return None
+
+    if repo:
+        repo = parse_repo(repo, default_owner=default_owner)
+        if repo is None:
+            return None
+    elif default_owner is None or default_repo is None:
+        return None
+    else:
+        repo = (default_owner, default_repo)
+
+    return (repo, issue_number)
+
+
+def find_repo_in_channel_topic(topic: str) -> Repo | None:
+    key = "https://github.com/"
+    for word in topic.split():
+        if word.startswith(key):
+            return parse_repo(word[len(key) :])
 
 
 class GitHub(commands.Cog):
@@ -56,6 +113,35 @@ class GitHub(commands.Cog):
             .set_footer(text=footer)
         )
 
+    def github_issue_embed(self, issue: dict[str, Any]) -> discord.Embed:
+        is_pull_request = "pull_request" in issue
+        title = f'{"Pull request" if is_pull_request else "Issue"} #{issue["number"]}\n{issue["title"][:128]}'
+        body = issue["body"]
+        if len(body) > 256:
+            body = None
+
+        color = None
+        if issue["state"] == "open":
+            color = 0x2DA44E  # --color-open-emphasis
+        elif issue["state"] == "closed":
+            color = 0xCF222E  # --color-closed-emphasis
+        if is_pull_request:
+            pull_request = issue["pull_request"]
+            if pull_request["merged_at"] is not None:
+                color = 0x8250DF  # --color-done-emphasis
+            elif issue["draft"]:
+                color = 0x6E7781  # --color-neutral-emphasis
+
+        user = issue["user"]
+        comments = issue["comments"]
+        footer = f"💬 {comments}"
+
+        return (
+            discord.Embed(title=title, url=issue["html_url"], description=body, color=color)
+            .set_author(name=user["login"], url=user["html_url"], icon_url=user["avatar_url"])
+            .set_footer(text=footer)
+        )
+
     def get_github_color(self, language: str | None) -> int | None:
         if language is None:
             return None
@@ -69,11 +155,44 @@ class GitHub(commands.Cog):
         if message.author.bot:
             return
 
-        if match := match_repo(message.content):
-            if repo := await self.github.fetch_repo(*match):
-                view = DeleteButton(message.author)
-                reply = await message.reply(embed=self.github_repo_embed(repo), view=view)
-                view.message = reply
+        words = message.content.split()
+        embeds = []
+
+        try:
+            topic = message.channel.topic  # type: ignore
+        except AttributeError:
+            channel_repo = DEFAULT_REPO
+        else:
+            if topic is not None:
+                channel_repo = find_repo_in_channel_topic(topic)
+                if channel_repo is None:
+                    channel_repo = DEFAULT_REPO
+            else:
+                channel_repo = DEFAULT_REPO
+
+        for word in words:
+            match = parse_issue(word, default_owner=channel_repo[0], default_repo=channel_repo[1])
+            if match is not None:
+                repo, issue_number = match
+                repo = repo or DEFAULT_REPO
+                try:
+                    issue = await self.github.fetch_issue(*repo, issue_number)
+                except aiohttp.ClientResponseError:
+                    continue
+                embeds.append(self.github_issue_embed(issue))
+            else:
+                match = parse_repo(word)
+                if match is not None:
+                    try:
+                        repo = await self.github.fetch_repo(*match)
+                    except aiohttp.ClientResponseError:
+                        continue
+                    embeds.append(self.github_repo_embed(repo))
+
+        if embeds:
+            view = DeleteButton(message.author)
+            reply = await message.reply(embeds=embeds[:3], view=view)
+            view.message = reply
 
 
 async def setup(bot: bot.Wulkabot):
