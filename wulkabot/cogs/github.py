@@ -11,6 +11,7 @@ from discord.ext import commands
 
 from .. import bot
 from ..utils import github
+from ..utils.views import DeleteButton
 
 GITHUB_REPO = re.compile(r"(?:\s|^)(?P<owner>[\w-]+)/(?P<repo>[\w-]+)(?:\s|$)", re.ASCII)
 
@@ -70,7 +71,9 @@ class GitHub(commands.Cog):
 
         if match := match_repo(message.content):
             if repo := await self.github.fetch_repo(*match):
-                await message.reply(embed=self.github_repo_embed(repo))
+                view = DeleteButton(message.author)
+                reply = await message.reply(embed=self.github_repo_embed(repo), view=view)
+                view.message = reply
 
 
 async def setup(bot: bot.Wulkabot):

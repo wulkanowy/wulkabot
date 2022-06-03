@@ -14,16 +14,16 @@ IOS_REQUEST_WORDS = ("kiedy", "bedzie", "wulkanowy", "wulkanowego", "pobrac", "o
 
 
 def is_ios_request(text: str, /) -> bool:
-    words = remove_diacritics(text.replace("?", "").replace("!", "")).lower().split()
-
-    if len(words) > 10:
+    if len(text) > 100:
         # the text is longer and doesn't look like just a simple question
         return False
+
+    words = set(remove_diacritics(text.replace("?", "").replace("!", "")).lower().split())
 
     if "ios" not in words:
         return False
 
-    return True
+    return any(word in words for word in IOS_REQUEST_WORDS)
 
 
 class Automod(commands.Cog):
@@ -33,7 +33,7 @@ class Automod(commands.Cog):
             return
 
         if is_ios_request(message.content):
-            view = DeleteButton()
+            view = DeleteButton(message.author)
             reply = await message.reply("Witam chyba nigdy", view=view)
             view.message = reply
 
