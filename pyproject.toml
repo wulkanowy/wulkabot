@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Discord bot to help manage the Wulkanowy Discord server"
 authors = ["JelNiSław <jelnislaw@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "bot" }]
+packages = [{ include = "wulkabot" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
