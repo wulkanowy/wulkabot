@@ -5,13 +5,13 @@ class DeleteButton(discord.ui.View):
     def __init__(self, invoker: discord.User | discord.Member) -> None:
         super().__init__(timeout=10)
         self.invoker = invoker
-        self.message: discord.Message | None = None
+        self.message: discord.Message
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (
             interaction.user == self.invoker
             or isinstance(interaction.user, discord.Member)
-            and interaction.user.resolved_permissions.manage_messages
+            and interaction.user.resolved_permissions.manage_messages  # pyright: ignore [reportOptionalMemberAccess]
         ):
             return True
 
