@@ -1,8 +1,3 @@
-"""
-Wulkabot
-Copyright (C) 2022-present Stanisław Jelnicki
-"""
-
 from typing import Any
 
 import aiohttp
