@@ -16,7 +16,7 @@ class Development(commands.Cog):
         self.bot = bot
 
     @app_commands.command()
-    async def sync(self, interaction: discord.Interaction, current_guild: bool = True):
+    async def sync(self, interaction: discord.Interaction, current_guild: bool = False):
         """Synchronizuje komendy bota"""
         # temporary check, needs refactoring
         if not await self.bot.is_owner(interaction.user):

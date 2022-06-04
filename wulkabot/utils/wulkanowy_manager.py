@@ -21,9 +21,6 @@ class WulkanowyBuild:
     def download_url(self) -> str:
         return f"{BASE_URL}/v1/download/app/{WULKANOWY_HASH}/build/{self.build_slug}/artifact/{self.artifact_slug}"
 
-    def __str__(self) -> str:
-        return self.download_url
-
 
 class WulkanowyManagerException(Exception):
     pass
@@ -35,7 +32,6 @@ class WulkanowyManager:
 
     async def fetch_branch_build(self, branch: str) -> WulkanowyBuild:
         response = await self._http.get(f"/v1/build/app/{WULKANOWY_HASH}/branch/{branch}")
-        response.raise_for_status()
         json = await response.json()
         if not json["success"]:
             raise WulkanowyManagerException(json["error"])

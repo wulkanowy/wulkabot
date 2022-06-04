@@ -12,6 +12,7 @@ from discord.ext import commands
 
 from .. import bot
 from ..utils import github, wulkanowy_manager
+from ..utils.wulkanowy_manager import WulkanowyBuild, WulkanowyManagerException
 
 
 class Wulkanowy(commands.Cog):
@@ -28,10 +29,19 @@ class Wulkanowy(commands.Cog):
     @app_commands.command()
     async def pobierz(self, interaction: discord.Interaction):
         branches = await self.github.fetch_branches("wulkanowy", "wulkanowy")
-        builds = await asyncio.gather(
+        builds: list[WulkanowyBuild | WulkanowyManagerException] = await asyncio.gather(
             *(map(self.wulkanowy_manager.fetch_branch_build, branches)), return_exceptions=True
         )
-        await interaction.response.send_message("\n".join(map(str, builds)), suppress_embeds=True)
+        text = []
+        for branch, build in zip(branches, builds, strict=True):
+            if isinstance(build, WulkanowyBuild):
+                text.append(f"{branch}: [pobierz]({build.download_url})")
+            else:
+                text.append(f"{branch}: brak")
+        embed = discord.Embed(
+            title="Pobierz najnowsze wersje testowe!", description="\n".join(text)
+        )
+        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: bot.Wulkabot):
