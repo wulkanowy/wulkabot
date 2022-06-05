@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 import aiohttp
 
@@ -14,14 +14,21 @@ class GitHub:
         response.raise_for_status()
         return await response.json()
 
-    async def fetch_branches(self, owner: str, repo: str) -> list[str]:
-        response = await self._http.get(f"/repos/{owner}/{repo}/branches")
+    async def fetch_open_pulls(self, owner: str, repo: str):
+        response = await self._http.get(
+            f"/repos/{owner}/{repo}/pulls",
+            params={"state": "open", "sort": "updated", "direction": "desc", "per_page": 25},
+        )
         response.raise_for_status()
-        branches = await response.json()
-        return [branch["name"] for branch in branches]
+        return await response.json()
 
     async def fetch_issue(self, owner: str, repo: str, issue_number: int) -> dict[str, Any]:
         response = await self._http.get(f"/repos/{owner}/{repo}/issues/{issue_number}")
+        response.raise_for_status()
+        return await response.json()
+
+    async def fetch_latest_release(self, owner: str, repo: str):
+        response = await self._http.get(f"/repos/{owner}/{repo}/releases/latest")
         response.raise_for_status()
         return await response.json()
 

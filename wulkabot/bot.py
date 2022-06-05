@@ -48,7 +48,3 @@ class Wulkabot(commands.Bot):
     async def load_extensions(self, package: types.ModuleType) -> None:
         for extension in self.find_extensions(package):
             await self.load_extension(extension)
-
-    async def reload_extensions(self) -> None:
-        for extension in set(self.extensions):
-            await self.reload_extension(extension)

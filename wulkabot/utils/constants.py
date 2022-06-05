@@ -1,0 +1,4 @@
+REPO = ("wulkanowy", "wulkanowy")
+ACCENT_COLOR = 0xD32F2F
+DEFAULT_BRANCH = "develop"
+BUILDS_CHANNEL_ID = 983106478426693653

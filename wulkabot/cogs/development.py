@@ -30,17 +30,6 @@ class Development(commands.Cog):
             f"Synced **{len(commands)} {destination}** commands\n{commands_str}"
         )
 
-    @app_commands.command()
-    async def reload(self, interaction: discord.Interaction):
-        """Przeładowuje komendy bota"""
-        # temporary check, needs refactoring
-        if not await self.bot.is_owner(interaction.user):
-            await interaction.response.send_message("nie", ephemeral=True)
-            return
-
-        await self.bot.reload_extensions()
-        await interaction.response.send_message("Reloaded successfuly")
-
 
 async def setup(bot: bot.Wulkabot):
     await bot.add_cog(Development(bot))

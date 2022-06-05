@@ -6,7 +6,18 @@ from discord.ext import commands
 
 from .. import bot
 from ..utils import github, wulkanowy_manager
+from ..utils.constants import ACCENT_COLOR, BUILDS_CHANNEL_ID, REPO
 from ..utils.wulkanowy_manager import WulkanowyBuild, WulkanowyManagerException
+
+OTHER_DOWNLOADS = " | ".join(
+    (
+        "[Google Play](https://play.google.com/store/apps/details?id=io.github.wulkanowy)",
+        "[GitHub](https://github.com/wulkanowy/wulkanowy/releases)",
+        "[F-Droid](https://f-droid.org/en/packages/io.github.wulkanowy)",
+        "[AppGallery](https://appgallery.huawei.com/app/C101440411)",
+        f"<#{BUILDS_CHANNEL_ID}>",
+    )
+)
 
 
 class Wulkanowy(commands.Cog):
@@ -22,20 +33,44 @@ class Wulkanowy(commands.Cog):
 
     @app_commands.command()
     async def pobierz(self, interaction: discord.Interaction):
-        branches = await self.github.fetch_branches("wulkanowy", "wulkanowy")
+        await interaction.response.defer(thinking=True)
+
+        release = await self.github.fetch_latest_release(*REPO)
+        download_urls = []
+        for asset in release["assets"]:
+            name = asset["name"]
+            url = asset["browser_download_url"]
+            download_urls.append(f"[{name}]({url})")
+        download_urls = "\n".join(download_urls)
+
+        pulls = await self.github.fetch_open_pulls(*REPO)
+        branches = ["develop"]
+        branches.extend((pull["head"]["ref"] for pull in pulls))
         builds: list[WulkanowyBuild | WulkanowyManagerException] = await asyncio.gather(
-            *(map(self.wulkanowy_manager.fetch_branch_build, branches)), return_exceptions=True
+            *map(self.wulkanowy_manager.fetch_branch_build, branches), return_exceptions=True
         )
-        text = []
-        for branch, build in zip(branches, builds, strict=True):
-            if isinstance(build, WulkanowyBuild):
-                text.append(f"{branch}: [pobierz]({build.download_url})")
-            else:
-                text.append(f"{branch}: brak")
-        embed = discord.Embed(
-            title="Pobierz najnowsze wersje testowe!", description="\n".join(text)
+        lines = "\n".join(
+            (
+                f"`{build.build_number}` – [{branch}]({build.download_url})"
+                for branch, build in zip(branches, builds, strict=True)
+                if isinstance(build, WulkanowyBuild)
+            )
         )
-        await interaction.response.send_message(embed=embed)
+
+        text = "\n".join(
+            (
+                f'**Najnowsza wersja {release["name"]}**',
+                download_urls,
+                "",
+                "**Wersje testowe**",
+                lines,
+                "",
+                "**Inne źródła**",
+                OTHER_DOWNLOADS,
+            )
+        )
+        embed = discord.Embed(title="Pobierz Wulkanowego!", description=text, color=ACCENT_COLOR)
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot: bot.Wulkabot):
