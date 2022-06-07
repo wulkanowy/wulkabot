@@ -8,7 +8,7 @@ def test_parse_repo():
 
 
 def test_parse_issue():
-    assert github.parse_issue("owner/repo#1") == (("owner", "repo", 1))
+    assert github.parse_issue("owner/repo#1") == (("owner", "repo"), 1)
     assert github.parse_issue("owner/repo#0") is None
     assert github.parse_issue("#1", default_owner="owner", default_repo="repo") == (
         ("owner", "repo"),
