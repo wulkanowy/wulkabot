@@ -7,6 +7,17 @@ from ..utils.views import DeleteButton
 
 IOS_REQUEST_WORDS = ("kiedy", "bedzie", "wulkanowy", "wulkanowego", "pobrac", "ogarnac")
 
+IOS_NOTICE = """
+Witam chyba nigdy
+
+Długa odpowiedź:
+Niestety Wulkanowy na iOS może się nigdy nie pojawić. Wynika to z kilku przyczyn. \
+Najważniejszą jest brak czasu — Wulkanowy to projekt tworzony po godzinach przez grupę uczniów \
+(niektórzy z nas już pracują) i nie mamy czasu na napisanie praktycznie całej aplikacji od nowa. \
+Nie mówimy oczywiście kategorycznego „nie”, ale nie możemy zapewnić, \
+że uda nam się kiedykolwiek wydać Wulkanowego na iOS.
+"""
+
 
 def is_ios_request(text: str, /) -> bool:
     if len(text) > 100:
@@ -29,7 +40,7 @@ class Automod(commands.Cog):
 
         if is_ios_request(message.content):
             view = DeleteButton(message.author)
-            reply = await message.reply("Witam chyba nigdy", view=view)
+            reply = await message.reply(IOS_NOTICE, view=view)
             view.message = reply
 
 
