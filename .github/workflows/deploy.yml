@@ -22,6 +22,6 @@ jobs:
         name: Docker Compose remote deployment
         with:
           ssh_host: ${{ secrets.ORACLE_CLOUD_SSH_HOST }}
-          ssh_user: ${{ secrets.ORACLE_CLOUD_SSH_PRIVATE_KEY }}
-          ssh_private_key: ${{ secrets.ORACLE_CLOUD_SSH_USER }}
+          ssh_user: ${{ secrets.ORACLE_CLOUD_SSH_USER }}
+          ssh_private_key: ${{ secrets.ORACLE_CLOUD_SSH_PRIVATE_KEY }}
           docker_compose_prefix: bot
