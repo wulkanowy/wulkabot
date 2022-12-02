@@ -2,23 +2,26 @@ name: Deploy to Oracle Cloud
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: oracle-cloud
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Create .env file
-      uses: SpicyPizza/create-envfile@v1
-      with:
-        envkey_API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
-        envkey_DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-    - uses: alex-ac/github-action-ssh-docker-compose@master
-      name: Docker-Compose Remote Deployment
-      with:
-        ssh_host: ${{ secrets.CLOUD_SSH_HOST }}
-        ssh_private_key: ${{ secrets.CLOUD_SSH_PRIVATE_KEY }}
-        ssh_user: ${{ secrets.CLOUD_SSH_USER }}
-        docker_compose_prefix: bot
+      - uses: actions/checkout@v3
+
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          envkey_DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+
+      - uses: alex-ac/github-action-ssh-docker-compose@master
+        name: Docker Compose remote deployment
+        with:
+          ssh_host: ${{ secrets.SSH_HOST }}
+          ssh_user: ${{ secrets.SSH_USER }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          docker_compose_prefix: bot
