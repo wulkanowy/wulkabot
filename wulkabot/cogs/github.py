@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from .. import bot
 from ..utils import github
-from ..utils.constants import REPO
+from ..utils.constants import GITHUB_REPO
 from ..utils.views import DeleteButton
 
 Repo = tuple[str, str]
@@ -156,20 +156,20 @@ class GitHub(commands.Cog):
         try:
             topic = message.channel.topic  # type: ignore
         except AttributeError:
-            channel_repo = REPO
+            channel_repo = GITHUB_REPO
         else:
             if topic is not None:
                 channel_repo = find_repo_in_channel_topic(topic)
                 if channel_repo is None:
-                    channel_repo = REPO
+                    channel_repo = GITHUB_REPO
             else:
-                channel_repo = REPO
+                channel_repo = GITHUB_REPO
 
         for word in words:
             match = parse_issue(word, default_owner=channel_repo[0], default_repo=channel_repo[1])
             if match is not None:
                 repo, issue_number = match
-                repo = repo or REPO
+                repo = repo or GITHUB_REPO
                 try:
                     issue = await self.github.fetch_issue(*repo, issue_number)
                 except aiohttp.ClientResponseError:

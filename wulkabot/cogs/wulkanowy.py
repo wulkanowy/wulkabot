@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from .. import bot
 from ..utils import github, wulkanowy_manager
-from ..utils.constants import ACCENT_COLOR, BUILDS_CHANNEL_ID, REPO
+from ..utils.constants import ACCENT_COLOR, BUILDS_CHANNEL_ID, GITHUB_REPO
 from ..utils.wulkanowy_manager import WulkanowyBuild, WulkanowyManagerException
 
 OTHER_DOWNLOADS = " | ".join(
@@ -35,7 +35,7 @@ class Wulkanowy(commands.Cog):
     async def pobierz(self, interaction: discord.Interaction):
         await interaction.response.defer(thinking=True)
 
-        release = await self.github.fetch_latest_release(*REPO)
+        release = await self.github.fetch_latest_release(*GITHUB_REPO)
         download_urls = []
         for asset in release["assets"]:
             name = asset["name"]
@@ -43,7 +43,7 @@ class Wulkanowy(commands.Cog):
             download_urls.append(f"[{name}]({url})")
         download_urls = "\n".join(download_urls)
 
-        pulls = await self.github.fetch_open_pulls(*REPO)
+        pulls = await self.github.fetch_open_pulls(*GITHUB_REPO)
         branches = ["develop"]
         branches.extend((pull["head"]["ref"] for pull in pulls))
         builds: list[WulkanowyBuild | WulkanowyManagerException] = await asyncio.gather(
