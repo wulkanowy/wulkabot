@@ -11,7 +11,7 @@ from . import cogs
 class Wulkabot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=commands.when_mentioned_or("."),
+            command_prefix=commands.when_mentioned_or("!"),
             help_command=commands.MinimalHelpCommand(),
             intents=discord.Intents(guilds=True, messages=True, message_content=True),
             allowed_mentions=discord.AllowedMentions.none(),
