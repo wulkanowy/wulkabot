@@ -12,7 +12,7 @@ class Wulkabot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned_or("!"),
-            help_command=commands.MinimalHelpCommand(),
+            help_command=None,
             intents=discord.Intents(guilds=True, messages=True, message_content=True),
             allowed_mentions=discord.AllowedMentions.none(),
         )
@@ -27,7 +27,10 @@ class Wulkabot(commands.Bot):
     async def on_command_error(
         self, context: commands.Context, exception: commands.errors.CommandError, /
     ) -> None:
-        await context.send(f"Error! {exception}")
+        if isinstance(exception, commands.CommandNotFound):
+            await context.send("Taka komenda nie istnieje. Być może chcesz użyć jej wersji z `/`")
+        else:
+            await context.send(str(exception))
 
     async def close(self) -> None:
         await super().close()
