@@ -188,7 +188,6 @@ class GitHub(commands.Cog):
             view = DeleteButton(message.author)
             reply = await message.reply(embeds=embeds[:3], view=view)
             view.message = reply
-            print(reply.embeds)
 
 
 async def setup(bot: bot.Wulkabot):

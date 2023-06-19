@@ -1,4 +1,5 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 from .. import bot
@@ -45,7 +46,7 @@ def is_ios_request(text: str, /) -> bool:
         # the text is longer and doesn't look like just a simple question
         return False
 
-    words = set(text.replace("?", "").replace("!", "").casefold().split())
+    words = text.replace("?", "").replace("!", "").casefold().split()
 
     if all(word not in words for word in ("ios", "iphone", "apple")):
         return False
@@ -63,6 +64,11 @@ class Automod(commands.Cog):
             view = DeleteButton(message.author)
             reply = await message.reply(embed=IOS_NOTICE, view=view)
             view.message = reply
+
+    @app_commands.command(name="kiedy-ios")
+    async def kiedy_ios(self, interaction: discord.Interaction):
+        """Tłumaczy powody braku wersji na iOS"""
+        await interaction.response.send_message(embed=IOS_NOTICE)
 
 
 async def setup(bot: bot.Wulkabot):

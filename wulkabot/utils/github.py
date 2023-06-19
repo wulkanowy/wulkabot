@@ -5,9 +5,7 @@ import aiohttp
 
 class GitHub:
     def __init__(self) -> None:
-        self._http = aiohttp.ClientSession(
-            base_url="https://api.github.com", headers={"Accept": "application/vnd.github.v3+json"}
-        )
+        self._http = aiohttp.ClientSession(base_url="https://api.github.com")
 
     async def fetch_repo(self, owner: str, repo: str) -> dict[str, Any]:
         response = await self._http.get(f"/repos/{owner}/{repo}")
