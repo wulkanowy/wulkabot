@@ -20,25 +20,16 @@ IOS_REQUEST_WORDS = (
     "ogarnac",
 )
 
-IOS_NOTICE = (
-    discord.Embed(title="Witam chyba nigdy", color=ACCENT_COLOR)
-    .add_field(
-        name="Długa odpowiedź:",
-        value="""Niestety, Wulkanowy na iOS może się nigdy nie pojawić. Wynika to z kilku przyczyn. \
+IOS_INFO_1 = """Niestety, Wulkanowy na iOS może się nigdy nie pojawić. Wynika to z kilku przyczyn. \
 Najważniejszą jest brak czasu — Wulkanowy to projekt tworzony po godzinach przez grupę uczniów \
 (niektórzy z nas już pracują) i nie mamy czasu na napisanie praktycznie całej aplikacji od nowa. \
 Nie mówimy oczywiście kategorycznego „nie”, ale nie możemy zapewnić, \
-że uda nam się kiedykolwiek wydać Wulkanowego na iOS.""",
-        inline=False,
-    )
-    .add_field(
-        name="Alternatywna aplikacja",
-        value="""Możesz zapoznać się z aplikacją naszej zaprzyjaźnionej konkurencji — \
+że uda nam się kiedykolwiek wydać Wulkanowego na iOS."""
+
+
+IOS_INFO_2 = """Możesz zapoznać się z aplikacją naszej zaprzyjaźnionej konkurencji — \
 Vulcanova, która dostępna jest także na iOS! Dołącz na jej serwer Discord używając \
-[tego linku](https://discord.gg/QJqu9gBZKt).""",
-        inline=False,
-    )
-)
+[tego linku](https://discord.gg/QJqu9gBZKt)."""
 
 
 def is_ios_request(text: str, /) -> bool:
@@ -62,13 +53,22 @@ class Automod(commands.Cog):
 
         if is_ios_request(message.content):
             view = DeleteButton(message.author)
-            reply = await message.reply(embed=IOS_NOTICE, view=view)
+            reply = await message.reply(
+                embed=discord.Embed(title="Witam chyba nigdy", color=ACCENT_COLOR)
+                .add_field(name="Długa odpowiedź:", value=IOS_INFO_1, inline=False)
+                .add_field(name="Alternatywna aplikacja", value=IOS_INFO_2, inline=False),
+                view=view,
+            )
             view.message = reply
 
-    @app_commands.command(name="kiedy-ios")
-    async def kiedy_ios(self, interaction: discord.Interaction):
+    @app_commands.command()
+    async def ios(self, interaction: discord.Interaction):
         """Tłumaczy powody braku wersji na iOS"""
-        await interaction.response.send_message(embed=IOS_NOTICE)
+        await interaction.response.send_message(
+            embed=discord.Embed(
+                title="Witam chyba nigdy", description=IOS_INFO_1, color=ACCENT_COLOR
+            ).add_field(name="Alternatywna aplikacja", value=IOS_INFO_2, inline=False)
+        )
 
 
 async def setup(bot: bot.Wulkabot):
