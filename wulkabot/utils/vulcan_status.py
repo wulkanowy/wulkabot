@@ -55,7 +55,7 @@ DOMAINS: list[Domain] = [
     ),
     Domain("Rzeszów", "https://portal.vulcan.net.pl/rzeszowprojekt", "Platforma VULCAN"),
     Domain(
-        "resman.pl: Uczeń",
+        "Rzeszów: Uczeń",
         "https://uonetplus-uczen.vulcan.net.pl/rzeszowprojekt",
         "Logowanie do systemu",
     ),
