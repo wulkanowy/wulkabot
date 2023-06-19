@@ -1,10 +1,10 @@
 FROM python:3.11-alpine
 
-ENV POETRY_VERSION=1.2.0
+ENV POETRY_VERSION=1.5.1
 ENV PYTHONUNBUFFERED=1
 
 RUN apk add gcc libressl-dev libffi-dev python3-dev musl-dev
-RUN pip install "poetry==$POETRY_VERSION"
+RUN pip install "poetry~=$POETRY_VERSION"
 WORKDIR /app
 COPY poetry.lock pyproject.toml /app/
 

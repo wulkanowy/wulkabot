@@ -8,15 +8,15 @@ packages = [{ include = "wulkabot" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-"discord.py" = "^2.1"
+"discord.py" = "^2.3"
 aiohttp = "^3.8"
-python-dotenv = "^0.21"
+python-dotenv = "^1.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.10"
-isort = "^5.10"
+black = "^23.3"
+isort = "^5.12"
 pyright = "^1.1"
-pytest = "^7.2"
+pytest = "^7.3"
 
 [tool.black]
 verbose = true
