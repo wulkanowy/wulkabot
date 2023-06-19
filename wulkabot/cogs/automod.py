@@ -65,9 +65,9 @@ class Automod(commands.Cog):
     async def ios(self, interaction: discord.Interaction):
         """Tłumaczy powody braku wersji na iOS"""
         await interaction.response.send_message(
-            embed=discord.Embed(
-                title="Witam chyba nigdy", description=IOS_INFO_1, color=ACCENT_COLOR
-            ).add_field(name="Alternatywna aplikacja", value=IOS_INFO_2, inline=False)
+            embed=discord.Embed(description=IOS_INFO_1, color=ACCENT_COLOR).add_field(
+                name="Alternatywna aplikacja", value=IOS_INFO_2, inline=False
+            )
         )
 
 
