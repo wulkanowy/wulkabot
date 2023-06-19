@@ -20,6 +20,7 @@ class Wulkabot(commands.Bot):
     async def setup_hook(self) -> None:
         self.http_client = aiohttp.ClientSession()
         await self.load_extensions(cogs)
+        await self.tree.sync()
 
     async def on_connect(self) -> None:
         print(f"Connected as {self.user}")
@@ -42,7 +43,7 @@ class Wulkabot(commands.Bot):
             return name.rsplit(".", maxsplit=1)[-1]
 
         extensions = set()
-        for package in pkgutil.walk_packages(module.__path__, module.__name__ + "."):
+        for package in pkgutil.walk_packages(module.__path__, f"{module.__name__}."):
             if package.ispkg or unqualify(package.name).startswith("_"):
                 continue
             extensions.add(package.name)
