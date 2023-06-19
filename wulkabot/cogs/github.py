@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 
 from .. import bot
-from ..utils import github
+from ..utils import data_utils, github
 from ..utils.constants import GITHUB_REPO
 from ..utils.views import DeleteButton
 
@@ -149,8 +149,7 @@ class GitHub(commands.Cog):
         if message.author.bot:
             return
 
-        # `dict.fromkeys` allows us to deduplicate the list whilst preserving order
-        words = dict.fromkeys(message.content.casefold().split()).keys()
+        words = data_utils.deduplicate_list(message.content.casefold().split())
         embeds = []
 
         try:

@@ -15,6 +15,7 @@ class Wulkabot(commands.Bot):
             help_command=None,
             intents=discord.Intents(guilds=True, messages=True, message_content=True),
             allowed_mentions=discord.AllowedMentions.none(),
+            max_ratelimit_timeout=10,
         )
 
     async def setup_hook(self) -> None:

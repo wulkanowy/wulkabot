@@ -5,9 +5,9 @@ from discord import app_commands
 from discord.ext import commands
 
 from .. import bot
-from ..utils import github, wulkanowy_manager
+from ..utils import data_utils, github, wulkanowy_manager
 from ..utils.constants import ACCENT_COLOR, BUILDS_CHANNEL_ID, GITHUB_REPO
-from ..utils.wulkanowy_manager import WulkanowyBuild, WulkanowyManagerException
+from ..utils.wulkanowy_manager import WulkanowyBuild
 
 OTHER_DOWNLOADS = " | ".join(
     (
@@ -46,7 +46,8 @@ class Wulkanowy(commands.Cog):
         pulls = await self.github.fetch_open_pulls(*GITHUB_REPO)
         branches = ["develop"]
         branches.extend((pull["head"]["ref"] for pull in pulls))
-        builds: list[WulkanowyBuild | WulkanowyManagerException] = await asyncio.gather(
+        branches = data_utils.deduplicate_list(branches)
+        builds = await asyncio.gather(
             *map(self.wulkanowy_manager.fetch_branch_build, branches), return_exceptions=True
         )
         lines = "\n".join(
